@@ -1,0 +1,45 @@
+#terraform {
+#  access_key = "AKIA6BIQTFGL6V6HO2JP"
+#  secret_key = "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"
+#  region     = "us-east-1"
+#}
+
+
+#terraform {
+#  access_key = "${var.aws_access_key}"
+#  secret_key = "${var.aws_secret_key}"
+#  region     = "${var.aws_region}"
+#}
+
+
+
+#resource "aws_s3_bucket" "Mercury-s3" {
+#  bucket = "Mercury-s3-state"
+#  key = "Mercury-s3.tfstate"
+#  acl    = "private"
+#  region = "${var.region}"
+#
+#  tags = {
+#    Name        = "Mercury-s3-bucket"
+#    Environment = "Prod"
+#  }
+#}
+
+terraform {
+   backend "s3" {
+   bucket = "Mercury-S3"
+   key = "mercury-s3.tfstate"
+  }
+}
+
+resource "aws_dynamodb_table" "Mercury_statelock" {
+  name           = "Mercury-lock-state"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
